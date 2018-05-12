@@ -1,12 +1,12 @@
-# Google Classroom Bulk Grader
-A web app to update a bunch of grades in a Google Classroom course.
-You can only update the grades for assignments made by the same Google project.
+# Google Incremental Authorization Sample
+A web app to demonstrate incremental authorization. 
+This project requires a modified version of Google's API Client Library for .NET.
 
 ## Getting Started
-1. Close this project.
-2. Clone @buzallens's https://github.com/buzallen/google-api-dotnet-client/tree/master/Src/Support/Google.Apis.Auth.AspMvcCore project.
-3. Open gcbulkgrader.sln in VS 2017 and fix the Google.Apis.Auth.AspMvcCore project so it loads from your clone.
-4. Right click on the gcbulkgrader project and select Manage User Secrets.
+1. Clone this repository.
+2. Clone https://github.com/andyfmiller/google-api-dotnet-client.
+3. Open GoogleIncrementalSample.sln in VS 2017 and fix the project references to Google.Apis.Auth and Google.Apis.Auth.AspNetCore.
+4. Right click on the project and select Manage User Secrets.
 5. Fill in your ClientId and ClientSecret:
 ```
 {
@@ -15,3 +15,5 @@ You can only update the grades for assignments made by the same Google project.
 }
 ```
 6. Run the solution!
+6.a. First sign in. This will only request the email and profile scopes.
+6.b. Second list your Google Classroom classes. This will incrementally request the ClassroomService.Scope.ClassroomCoursesReadonly scope.
