@@ -15,5 +15,5 @@ This project requires a modified version of Google's API Client Library for .NET
 }
 ```
 6. Run the solution!
-6.a. First sign in. This will only request the email and profile scopes.
-6.b. Second list your Google Classroom classes. This will incrementally request the ClassroomService.Scope.ClassroomCoursesReadonly scope.
+a. First sign in. This will only request the email and profile scopes.
+b. Second list your Google Classroom classes. This will incrementally request the ClassroomService.Scope.ClassroomCoursesReadonly scope.
