@@ -1,0 +1,67 @@
+﻿@model CoursesModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h3>Google API .NET Client - Incremental Auth Sample</h3>
+
+<p>
+    Sign In only needs email and profile scopes, while listing Google Classroom classes also needs https://www.googleapis.com/auth/classroom.courses.readonly scope.
+</p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Action</th>
+        <th>Scopes Requested</th>
+        <th>Result</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            @if (string.IsNullOrEmpty(ViewData["PersonName"]?.ToString()))
+            {
+                <a href='@Url.Action("SignIn")'>Sign In</a>
+            }
+            else
+            {
+                <a href='@Url.Action("SignOut")'>Sign Out</a>
+            }
+        </td>
+        <td>email, profile</td>
+        <td>
+            @if (string.IsNullOrEmpty(ViewData["PersonName"]?.ToString()))
+            {
+                <span>Signed out</span>
+            }
+            else
+            {
+                <span>Signed in as @ViewData["PersonName"]</span>
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href='@Url.Action("ListCourses")'>Get a list of Google Classroom classes</a>
+        </td>
+        <td>email,
+            profile,
+            https://www.googleapis.com/auth/classroom.courses.readonly
+        </td>
+        <td>
+            @if (Model != null)
+            {
+                <p>@ViewData["PersonName"]'s classes:</p>
+                <ol>
+                @foreach (var course in Model.Courses)
+                {
+                    <li>@course.CourseName</li>
+                }
+                </ol>
+            }
+        </td>
+    </tr>
+    </tbody>
+</table>
