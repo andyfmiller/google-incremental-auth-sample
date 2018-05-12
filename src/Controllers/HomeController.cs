@@ -99,6 +99,7 @@ namespace GoogleIncrementalSample.Controllers
             if (token != null && !string.IsNullOrEmpty(token.AccessToken))
             {
                 await appFlow.Flow.RevokeTokenAsync(userId, token.AccessToken, cancellationToken).ConfigureAwait(false);
+                TempData.Remove("user");
             }
 
             return RedirectToAction("Index");
