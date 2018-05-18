@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GoogleIncrementalSample.Models
+namespace GoogleIncrementalMvcSample.Models
 {
     public class CoursesModel
     {

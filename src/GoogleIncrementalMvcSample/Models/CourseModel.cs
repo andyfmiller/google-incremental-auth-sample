@@ -1,4 +1,4 @@
-﻿namespace GoogleIncrementalSample.Models
+﻿namespace GoogleIncrementalMvcSample.Models
 {
     public class CourseModel
     {

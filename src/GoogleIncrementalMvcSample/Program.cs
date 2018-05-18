@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore;
+﻿using Microsoft.ApplicationInsights.Extensibility.Implementation;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace GoogleIncrementalSample
+namespace GoogleIncrementalMvcSample
 {
     public class Program
     {
         public static void Main(string[] args)
         {
+            TelemetryDebugWriter.IsTracingDisabled = true;
             BuildWebHost(args).Run();
         }
 

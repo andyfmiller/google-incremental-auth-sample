@@ -6,7 +6,7 @@ using Google.Apis.Classroom.v1;
 using Google.Apis.Util.Store;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GoogleIncrementalSample.Controllers
+namespace GoogleIncrementalMvcSample.Controllers
 {
     /// <summary>
     /// This flow is used to retrieve the user's Google Classroom class list. It needs an additional scope
@@ -50,8 +50,6 @@ namespace GoogleIncrementalSample.Controllers
                     },
                     Scopes = new[]
                     {
-                        "email",
-                        "profile",
                         ClassroomService.Scope.ClassroomCoursesReadonly
                     },
 

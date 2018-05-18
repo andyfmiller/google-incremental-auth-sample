@@ -1,15 +1,16 @@
 ﻿using Google.Apis.Auth.OAuth2.AspNetCore.Mvc;
 using Google.Apis.Auth.OAuth2.AspNetCore.Mvc.Controllers;
+using Google.Apis.Auth.OAuth2.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
-namespace GoogleIncrementalSample.Controllers
+namespace GoogleIncrementalMvcSample.Controllers
 {
     /// <summary>
-    /// Handle the Sign In AuthCallback request.
+    /// Handle the Class List AuthCallback request.
     /// </summary>
     [Route("[controller]")]
-    public class SignInAuthCallbackController : AuthCallbackController
+    public class ClassListAuthCallbackController : AuthCallbackController
     {
         private readonly IConfiguration _configuration;
 
@@ -23,7 +24,7 @@ namespace GoogleIncrementalSample.Controllers
             get { return _configuration["Authentication:Google:ClientSecret"]; }
         }
 
-        public SignInAuthCallbackController(IConfiguration config)
+        public ClassListAuthCallbackController(IConfiguration config)
         {
             _configuration = config;
         }
@@ -32,8 +33,13 @@ namespace GoogleIncrementalSample.Controllers
         {
             get
             {
-                return new SignInAppFlowMetadata(ClientId, ClientSecret);
+                return new ClassListAppFlowMetadata(ClientId, ClientSecret);
             }
+        }
+
+        protected override ActionResult OnTokenError(TokenErrorResponse errorResponse)
+        {
+            return RedirectToAction("Index", "Home");
         }
     }
 }

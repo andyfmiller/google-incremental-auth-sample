@@ -6,7 +6,7 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Util.Store;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GoogleIncrementalSample.Controllers
+namespace GoogleIncrementalMvcSample.Controllers
 {
     /// <summary>
     /// This flow is used to sign in. Only email and profile scopes are requested.

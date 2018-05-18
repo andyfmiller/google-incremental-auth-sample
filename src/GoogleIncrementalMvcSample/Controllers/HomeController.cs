@@ -4,16 +4,18 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.Auth;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.AspNetCore.Mvc;
 using Google.Apis.Classroom.v1;
 using Google.Apis.Classroom.v1.Data;
 using Google.Apis.Services;
-using GoogleIncrementalSample.Models;
+using Google.Apis.Util.Store;
+using GoogleIncrementalMvcSample.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
-namespace GoogleIncrementalSample.Controllers
+namespace GoogleIncrementalMvcSample.Controllers
 {
     public class HomeController : Controller
     {
@@ -39,15 +41,26 @@ namespace GoogleIncrementalSample.Controllers
         /// </summary>
         private async Task LoadUserInfo(CancellationToken cancellationToken)
         {
-            var appFlow = new SignInAppFlowMetadata(ClientId, ClientSecret);
-            var userId = appFlow.GetUserId(this);
-            var token = await appFlow.Flow.LoadTokenAsync(userId, cancellationToken).ConfigureAwait(false);
-            if (token != null && !string.IsNullOrEmpty(token.IdToken))
+            try
             {
-                var payload = await GoogleJsonWebSignature.ValidateAsync(token.IdToken).ConfigureAwait(false);
-                ViewData["PersonName"] = payload.Name;
-                ViewData["PersonEmail"] = payload.Email;
-                ViewData["PersonPicture"] = payload.Picture;
+                var signInAppFlow = new SignInAppFlowMetadata(ClientId, ClientSecret);
+                var userId = signInAppFlow.GetUserId(this);
+                var token = await signInAppFlow.Flow.LoadTokenAsync(userId, cancellationToken).ConfigureAwait(false);
+                if (token != null && !string.IsNullOrEmpty(token.IdToken))
+                {
+                    var payload = await GoogleJsonWebSignature.ValidateAsync(token.IdToken).ConfigureAwait(false);
+                    ViewData["PersonName"] = payload.Name;
+                    ViewData["PersonEmail"] = payload.Email;
+                    ViewData["PersonPicture"] = payload.Picture;
+                    ViewData["GrantedScopes"] = token.Scope;
+                }
+                ViewData["SignInScopes"] = string.Join(" ", signInAppFlow.Flow.Scopes);
+                var classListAppFlow = new ClassListAppFlowMetadata(ClientId, ClientSecret);
+                ViewData["ClassListScopes"] = string.Join(" ", classListAppFlow.Flow.Scopes);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
 
