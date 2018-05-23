@@ -11,7 +11,7 @@ namespace GoogleIncrementalMvcSample.Controllers
     /// <summary>
     /// This flow is used to sign in. Only email and profile scopes are requested.
     /// </summary>
-    public class SignInAppFlowMetadata : FlowMetadata
+    public class SignInAppFlowMetadata : FlowMetadata, IAppFlowScopes
     {
         public SignInAppFlowMetadata(string clientId, string clientSecret)
         {
@@ -64,5 +64,10 @@ namespace GoogleIncrementalMvcSample.Controllers
         }
 
         public override IAuthorizationCodeFlow Flow { get; }
+
+        public IEnumerable<string> Scopes
+        {
+            get { return ((GoogleAuthorizationCodeFlow)Flow).Scopes; }
+        }
     }
 }

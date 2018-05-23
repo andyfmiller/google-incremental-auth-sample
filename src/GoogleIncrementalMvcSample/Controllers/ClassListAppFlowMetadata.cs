@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.AspNetCore.Mvc;
 using Google.Apis.Auth.OAuth2.Flows;
@@ -12,33 +14,22 @@ namespace GoogleIncrementalMvcSample.Controllers
     /// This flow is used to retrieve the user's Google Classroom class list. It needs an additional scope
     /// compared to the SignIn flow, which is requested as an incremental authorization.
     /// </summary>
-    public class ClassListAppFlowMetadata : FlowMetadata
+    public class ClassListAppFlowMetadata : FlowMetadata, IAppFlowScopes
     {
         /// <summary>
-        /// If the user previously signed in, then we know their email address. And if we
-        /// set the flow LoginHint to the email address, then the user will not be prompted
-        /// to select their account again, simplifying the incremental authorization.
+        /// Create a new FlowMetadata with additional scopes to access Classroom data without a login_hint.
         /// </summary>
-        public string LoginHint
-        {
-            get
-            {
-                var flow = (GoogleAuthorizationCodeFlow) Flow;
-                return flow.LoginHint;
-            }
-            set
-            {
-                var flow = (GoogleAuthorizationCodeFlow) Flow;
-                flow.LoginHint = value;
-            }
-        }
+        /// <param name="clientId">The ClientId for this app.</param>
+        /// <param name="clientSecret">The ClientSecret for this app.</param>
+        public ClassListAppFlowMetadata(string clientId, string clientSecret) : this(clientId, clientSecret, null) {}
 
         /// <summary>
         /// Create a new FlowMetadata with additional scopes to access Classroom data.
         /// </summary>
         /// <param name="clientId">The ClientId for this app.</param>
         /// <param name="clientSecret">The ClientSecret for this app.</param>
-        public ClassListAppFlowMetadata(string clientId, string clientSecret)
+        /// <param name="loginHint">The login_hint when requesting an authorization code</param>
+        public ClassListAppFlowMetadata(string clientId, string clientSecret, string loginHint)
         {
             Flow =
                 new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
@@ -50,15 +41,16 @@ namespace GoogleIncrementalMvcSample.Controllers
                     },
                     Scopes = new[]
                     {
+                        "email",
+                        "profile",
                         ClassroomService.Scope.ClassroomCoursesReadonly
                     },
 
                     // Using a FileDataStore for Development
                     DataStore = new FileDataStore("Classroom.Api.Auth.Store"),
 
-                    // Ask for incremental authorization of the additional scopes above
-                    // (this will trigger a request for a new authorization code)
-                    IncludeGrantedScopes = true
+                    // Set the login_hint
+                    UserDefinedQueryParams = new []{ new KeyValuePair<string, string>("login_hint", loginHint) }
                 });
         }
 
@@ -86,5 +78,10 @@ namespace GoogleIncrementalMvcSample.Controllers
         }
 
         public override IAuthorizationCodeFlow Flow { get; }
+
+        public IEnumerable<string> Scopes
+        {
+            get { return ((GoogleAuthorizationCodeFlow)Flow).Scopes; }
+        }
     }
 }
