@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.Auth;
 using Google.Apis.Auth.OAuth2.AspNetCore.Mvc;
-using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Classroom.v1;
 using Google.Apis.Classroom.v1.Data;
 using Google.Apis.Services;

@@ -4,11 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GoogleIncrementalMvcSample.Controllers
 {
-    interface IAppFlowScopes
+    internal interface IAppFlowScopes
     {
         /// <summary>Gets the authorization code flow.</summary>
         IAuthorizationCodeFlow Flow { get; }
 
+        /// <summary>
+        /// Gets the user identifier.
+        /// </summary>
+        /// <param name="controller">The controller</param>
+        /// <returns>User identifier</returns>
         string GetUserId(Controller controller);
 
         /// <summary>Get the authorization code flow scopes.</summary>
