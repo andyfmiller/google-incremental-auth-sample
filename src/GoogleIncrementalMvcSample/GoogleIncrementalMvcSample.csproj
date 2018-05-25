@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\google-api-dotnet-client\Src\Support\Google.Apis.Auth\Google.Apis.Auth.csproj" />
     <ProjectReference Include="..\Google.Apis.Auth.AspNetCore\Google.Apis.Auth.AspNetCore.csproj" />
   </ItemGroup>
 

@@ -108,8 +108,8 @@ namespace GoogleIncrementalMvcSample.Controllers
 
             // If the current token does not include all the required scopes,
             // expire the token to force a new authorization code. If the scopes
-            // are null, then this is a fresh token, we don't need a new one.
-            if (token != null && !string.IsNullOrWhiteSpace(token.Scope))
+            // are null, then this is a fresh token, and we don't need a new one.
+            if (token != null && !token.IsExpired(appFlow.Flow.Clock) && !string.IsNullOrWhiteSpace(token.Scope))
             {
                 var tokenScopes = token.Scope.Split(" ", StringSplitOptions.RemoveEmptyEntries);
                 if (!appFlow.Scopes.All(s => tokenScopes.Contains(s)))
@@ -184,6 +184,9 @@ namespace GoogleIncrementalMvcSample.Controllers
             }
         }
 
+        /// <summary>
+        /// Get the user's email from the current token
+        /// </summary>
         private async Task<string> GetUserEmail(CancellationToken cancellationToken)
         {
             try
@@ -191,7 +194,7 @@ namespace GoogleIncrementalMvcSample.Controllers
                 var appFlow = new SignInAppFlowMetadata(ClientId, ClientSecret);
                 var userId = appFlow.GetUserId(this);
                 var token = await appFlow.Flow.LoadTokenAsync(userId, cancellationToken).ConfigureAwait(false);
-                if (token != null && !string.IsNullOrEmpty(token.IdToken))
+                if (token != null && !token.IsExpired(appFlow.Flow.Clock) && !string.IsNullOrEmpty(token.IdToken))
                 {
                     var payload = await GoogleJsonWebSignature.ValidateAsync(token.IdToken).ConfigureAwait(false);
                     return payload.Email;
@@ -233,6 +236,9 @@ namespace GoogleIncrementalMvcSample.Controllers
             }
         }
 
+        /// <summary>
+        /// Store the FlowMetadata scopes requested in the user's token.
+        /// </summary>
         private async Task AddScopesToTokenAsync(IAppFlowScopes appFlow, CancellationToken cancellationToken)
         {
             var userId = appFlow.GetUserId(this);

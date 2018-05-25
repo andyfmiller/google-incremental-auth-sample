@@ -49,7 +49,9 @@ namespace GoogleIncrementalMvcSample.Controllers
                     DataStore = new FileDataStore("Classroom.Api.Auth.Store"),
 
                     // Set the login_hint
-                    UserDefinedQueryParams = new []{ new KeyValuePair<string, string>("login_hint", loginHint) }
+                    UserDefinedQueryParams = string.IsNullOrEmpty(loginHint) 
+                        ? null 
+                        : new []{ new KeyValuePair<string, string>("login_hint", loginHint) }
                 });
         }
 
