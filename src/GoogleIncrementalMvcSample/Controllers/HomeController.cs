@@ -101,6 +101,8 @@ namespace GoogleIncrementalMvcSample.Controllers
         /// </summary>
         public async Task<IActionResult> ListCourses(CancellationToken cancellationToken)
         {
+            // Simplify the incremental auth experience by providing a login_hint. The user will
+            // not be asked to select their account if they have already signed in.
             var loginHint = await GetUserEmail(cancellationToken).ConfigureAwait(false);
             var appFlow = new ClassListAppFlowMetadata(ClientId, ClientSecret, loginHint);
             var userId = appFlow.GetUserId(this);
@@ -222,9 +224,6 @@ namespace GoogleIncrementalMvcSample.Controllers
                 {
                     var payload = await GoogleJsonWebSignature.ValidateAsync(token.IdToken).ConfigureAwait(false);
                     ViewData["PersonName"] = payload.Name;
-                    ViewData["PersonEmail"] = payload.Email;
-                    ViewData["PersonPicture"] = payload.Picture;
-                    ViewData["GrantedScopes"] = token.Scope;
                 }
                 ViewData["SignInScopes"] = string.Join(" ", appFlow.Scopes);
                 var classListAppFlow = new ClassListAppFlowMetadata(ClientId, ClientSecret);
