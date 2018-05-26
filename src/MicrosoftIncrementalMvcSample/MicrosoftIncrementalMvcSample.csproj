@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>d151a932-920a-42b9-a2a7-1ba24bbc8a7e</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\ClassListAppFlowMetadata.cs" />
+    <Compile Remove="Controllers\ClassListAuthCallbackController.cs" />
+    <Compile Remove="Controllers\SignInAppFlowMetadata.cs" />
+    <Compile Remove="Controllers\SignInAuthCallbackController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.Classroom.v1" Version="1.33.1.1230" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.0-rc1-final" />
+  </ItemGroup>
+
+</Project>
