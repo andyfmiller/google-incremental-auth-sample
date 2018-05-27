@@ -39,12 +39,14 @@ namespace MicrosoftIncrementalMvcSample
                     options.SaveTokens = true;
                     options.Events.OnRemoteFailure = context =>
                     {
-                        // OAuthHandler will send the response from requesting an authorization
-                        // code to each Google handler. This handler will fail to read the response
-                        // from the "ClassList" scheme below. When that happens, just skip this
-                        // handler.
+                        // OAuthHandler will give every IAuthenticationRequestHandler a chance to
+                        // handle the /signin-google callback (with the authorization code). This
+                        // handler, with AuthenticationScheme=GoogleDefaults.AuthenticationScheme,
+                        // will not be able to read the state value in the request, and will fail.
+                        // When that happens, tell OAuthHandler to skip this handler and try the
+                        // next.
                         context.SkipHandler();
-                        return Task.FromResult(HandleRequestResult.SkipHandler());
+                        return Task.FromResult(0);
                     };
                 })
                 .AddGoogle("ClassList", "ClassList", options =>
