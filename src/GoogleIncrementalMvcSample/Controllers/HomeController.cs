@@ -220,14 +220,11 @@ namespace GoogleIncrementalMvcSample.Controllers
                 var appFlow = new SignInAppFlowMetadata(ClientId, ClientSecret);
                 var userId = appFlow.GetUserId(this);
                 var token = await appFlow.Flow.LoadTokenAsync(userId, cancellationToken).ConfigureAwait(false);
-                if (token != null && !string.IsNullOrEmpty(token.IdToken))
+                if (!string.IsNullOrEmpty(token?.IdToken))
                 {
                     var payload = await GoogleJsonWebSignature.ValidateAsync(token.IdToken).ConfigureAwait(false);
                     ViewData["PersonName"] = payload.Name;
                 }
-                ViewData["SignInScopes"] = string.Join(" ", appFlow.Scopes);
-                var classListAppFlow = new ClassListAppFlowMetadata(ClientId, ClientSecret);
-                ViewData["ClassListScopes"] = string.Join(" ", classListAppFlow.Scopes);
             }
             catch (Exception e)
             {
