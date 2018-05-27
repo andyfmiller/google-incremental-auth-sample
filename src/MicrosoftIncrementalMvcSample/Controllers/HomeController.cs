@@ -23,8 +23,6 @@ namespace MicrosoftIncrementalMvcSample.Controllers
         /// </summary>
         public IActionResult Index()
         {
-            LoadUserInfo();
-
             return View();
         }
 
@@ -74,9 +72,6 @@ namespace MicrosoftIncrementalMvcSample.Controllers
                     RedirectUri = "/Home/ListCourses"
                 });
             }
-
-            // Load the new user information
-            LoadUserInfo();
 
             var model = new CoursesModel();
 
@@ -138,17 +133,6 @@ namespace MicrosoftIncrementalMvcSample.Controllers
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// If the user is signed in, load ViewData with some information to display.
-        /// </summary>
-        private void LoadUserInfo()
-        {
-            if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                ViewData["PersonName"] = User.Identity.Name;
-            }
         }
     }
 }
