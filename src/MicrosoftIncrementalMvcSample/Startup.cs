@@ -1,11 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Google.Apis.Classroom.v1;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,13 +21,7 @@ namespace MicrosoftIncrementalMvcSample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                        
-            // See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?tabs=aspnetcore2x
-            .AddSessionStateTempDataProvider();
-
-            // See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?tabs=aspnetcore2x
-            services.AddSession();
+            services.AddMvc();
 
             services.AddAuthentication(options =>
                 {
@@ -87,9 +77,6 @@ namespace MicrosoftIncrementalMvcSample
             app.UseAuthentication();
 
             app.UseStaticFiles();
-
-            // See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?tabs=aspnetcore2x
-            app.UseSession();
 
             app.UseMvc(routes =>
             {
