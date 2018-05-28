@@ -39,7 +39,10 @@ namespace MicrosoftIncrementalMvcSample.Controllers
         /// </summary>
         public IActionResult SignIn()
         {
-            return new ChallengeResult(new AuthenticationProperties { RedirectUri = "/" });
+            return new ChallengeResult(new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("Index")
+            });
         }
 
         /// <summary>
@@ -69,7 +72,7 @@ namespace MicrosoftIncrementalMvcSample.Controllers
                 return new ChallengeResult("ClassList", new AuthenticationProperties()
                 {
                     Parameters = { new KeyValuePair<string, object>("login_hint", loginHint )},
-                    RedirectUri = "/Home/ListCourses"
+                    RedirectUri = Url.Action("ListCourses")
                 });
             }
 
