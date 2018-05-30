@@ -10,6 +10,7 @@ using Google.Apis.Classroom.v1;
 using Google.Apis.Classroom.v1.Data;
 using Google.Apis.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MicrosoftIncrementalMvcSample.Models;
@@ -41,6 +42,7 @@ namespace MicrosoftIncrementalMvcSample.Controllers
         {
             return new ChallengeResult(new AuthenticationProperties
             {
+                Parameters = { new KeyValuePair<string, object>("prompt", "select_account") },
                 RedirectUri = Url.Action("Index")
             });
         }

@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
@@ -36,7 +35,6 @@ namespace MicrosoftIncrementalMvcSample
                     options.ClientId = Configuration["Authentication:Google:ClientId"];
                     options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
                     options.AccessType = "offline";
-                    options.SaveTokens = true;
                     options.Events.OnRemoteFailure = context =>
                     {
                         // OAuthHandler will give every IAuthenticationRequestHandler a chance to
