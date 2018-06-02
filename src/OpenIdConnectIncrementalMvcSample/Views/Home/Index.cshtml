@@ -1,0 +1,61 @@
+﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication.OpenIdConnect
+@model OpenIdConnectIncrementalMvcSample.Models.CoursesModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h3>OpenId Connect ASP.NET Core - Incremental Auth Sample</h3>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Action</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <td>
+                <p><a href='@Url.Action("SignOutOfThisApp")'>Sign out of this site</a></p>
+                <p><a href='@Url.Action("SignOutOfGoogle")'>Sign out of this site and Google</a></p>
+            </td>
+            <td>
+                <span>
+                    Signed in as @User.Claims.SingleOrDefault(c => c.Type == "name")?.Value
+                    (@User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Email)?.Value)
+                </span>
+            </td>
+        }
+        else
+        {
+            <td>
+                <a href='@Url.Action("SignIn")'>Get user's name and email address</a>
+            </td>
+            <td>
+                <span>Signed out</span>
+            </td>
+        }
+    </tr>
+    <tr>
+        <td>
+            <a href='@Url.Action("ListCourses")'>Get a list of Google Classroom classes</a>
+        </td>
+        <td>
+            @if (Model?.Courses != null)
+            {
+                <p>@User.Identity.Name's classes:</p>
+                <ol>
+                    @foreach (var course in Model.Courses)
+                    {
+                        <li>@course.CourseName</li>
+                    }
+                </ol>
+            }
+        </td>
+    </tr>
+    </tbody>
+</table>
