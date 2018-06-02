@@ -1,0 +1,3 @@
+﻿This sample uses the [Google APIs Client Library for .NET](https://developers.google.com/api-client-library/dotnet) with a small custom library to support ASP.NET Core. This sample follows the example shown for Web Apps on the [OAuth 2.0 Authentication and Authorization](https://developers.google.com/api-client-library/dotnet/guide/aaa_oauth) page.
+
+All of the interesting code is in Startup.cs and HomeController.cs.
