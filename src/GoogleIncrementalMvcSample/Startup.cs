@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,7 +19,9 @@ namespace GoogleIncrementalMvcSample
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                         
+            // Add Session State support to track the current UserId (see GetUserId in the AppFlowMetadata).
             // See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?tabs=aspnetcore2x
             .AddSessionStateTempDataProvider();
 
@@ -31,14 +34,15 @@ namespace GoogleIncrementalMvcSample
         {
             if (env.IsDevelopment())
             {
-                app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             // See https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?tabs=aspnetcore2x

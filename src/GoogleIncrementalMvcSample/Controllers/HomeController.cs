@@ -224,6 +224,7 @@ namespace GoogleIncrementalMvcSample.Controllers
                 {
                     var payload = await GoogleJsonWebSignature.ValidateAsync(token.IdToken).ConfigureAwait(false);
                     ViewData["PersonName"] = payload.Name;
+                    ViewData["PersonEmail"] = payload.Email;
                 }
             }
             catch (Exception e)

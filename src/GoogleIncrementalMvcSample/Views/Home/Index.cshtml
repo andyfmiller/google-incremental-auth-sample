@@ -10,8 +10,7 @@
     <thead>
         <tr>
             <th>Action</th>
-            <th>Scopes Requested</th>
-            <th>Result</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -19,16 +18,16 @@
             @if (!string.IsNullOrEmpty(ViewData["PersonName"]?.ToString()))
             {
                 <td>
-                    <a href='@Url.Action("SignOut")'>Sign Out</a>
+                    <a href='@Url.Action("SignOut")'>Sign out of this site</a>
                 </td>
                 <td>
-                    <span>Signed in as @ViewData["PersonName"]</span>
+                    <span>Signed in as @ViewData["PersonName"] (@ViewData["PersonEmail"])</span>
                 </td>
             }
             else
             {
                 <td>
-                    <a href='@Url.Action("SignIn")'>Sign In</a>
+                    <a href='@Url.Action("SignIn")'>Get user's name and email address</a>
                 </td>
                 <td>
                     <span>Signed out</span>
