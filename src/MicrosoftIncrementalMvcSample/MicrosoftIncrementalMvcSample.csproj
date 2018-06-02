@@ -6,15 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\ClassListAppFlowMetadata.cs" />
-    <Compile Remove="Controllers\ClassListAuthCallbackController.cs" />
-    <Compile Remove="Controllers\SignInAppFlowMetadata.cs" />
-    <Compile Remove="Controllers\SignInAuthCallbackController.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Google.Apis.Classroom.v1" Version="1.33.1.1230" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.0-rc1-final" />
+    <PackageReference Include="Google.Apis.Classroom.v1" Version="1.34.0.1236" />
+    <PackageReference Include="Microsoft.AspNetCore.All" />
   </ItemGroup>
 
 </Project>
