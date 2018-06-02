@@ -1,4 +1,5 @@
-﻿@model MicrosoftIncrementalMvcSample.Models.CoursesModel
+﻿@using System.Security.Claims
+@model MicrosoftIncrementalMvcSample.Models.CoursesModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -10,7 +11,7 @@
     <thead>
         <tr>
             <th>Action</th>
-            <th>Result</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -18,16 +19,20 @@
             @if (User.Identity.IsAuthenticated)
             {
                 <td>
-                    <a href='@Url.Action("SignOut")'>Sign Out</a>
+                    <p><a href='@Url.Action("SignOutOfThisApp")'>Sign out of this site</a></p>
+                    <p><a href='@Url.Action("SignOutOfGoogle")'>Sign out of this site and Google</a></p>
                 </td>
                 <td>
-                    <span>Signed in as @User.Identity.Name</span>
+                    <span>
+                        Signed in as @User.Identity.Name 
+                        (@User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Email)?.Value)
+                    </span>
                 </td>
             }
             else
             {
                 <td>
-                    <a href='@Url.Action("SignIn")'>Sign In</a>
+                    <a href='@Url.Action("SignIn")'>Get user's name and email address</a>
                 </td>
                 <td>
                     <span>Signed out</span>

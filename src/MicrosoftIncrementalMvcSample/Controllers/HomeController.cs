@@ -10,7 +10,6 @@ using Google.Apis.Classroom.v1;
 using Google.Apis.Classroom.v1.Data;
 using Google.Apis.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MicrosoftIncrementalMvcSample.Models;
@@ -42,18 +41,38 @@ namespace MicrosoftIncrementalMvcSample.Controllers
         {
             return new ChallengeResult(new AuthenticationProperties
             {
-                Parameters = { new KeyValuePair<string, object>("prompt", "select_account") },
                 RedirectUri = Url.Action("Index")
             });
         }
 
         /// <summary>
-        /// User Sign Out action.
+        /// Sign out of this site. You are still signed in to Google.
         /// </summary>
-        public async Task<IActionResult> SignOut(CancellationToken cancellationToken)
+        public async Task<IActionResult> SignOutOfThisApp()
         {
-            await HttpContext.SignOutAsync();
+            await HttpContext.SignOutAsync().ConfigureAwait(false);
             return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Sign out of this site and Google. If you open another tab, you will be signed out of Google.
+        /// </summary>
+        public async Task<IActionResult> SignOutOfGoogle()
+        {
+            // Sign out of this site.
+            await HttpContext.SignOutAsync().ConfigureAwait(false);
+
+            //// Sign out of Google (after signout, redirects to Google Sign In)
+            //var redirectUrl = "https://www.google.com/accounts/Logout";
+
+            // Sign out of Google (after signout, redirects to Google home page)
+            //var redirectUrl = "https://www.google.com/accounts/Logout?continue=https://www.google.com";
+
+            // Sign out of Google (after signout, redirects to this app's home page)
+            var redirectUrl = "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue="
+                              + Request.Scheme + "://" + Request.Host + Url.Action("Index");
+
+            return Redirect(redirectUrl);
         }
 
         /// <summary>
