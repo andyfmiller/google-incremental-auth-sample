@@ -1,5 +1,5 @@
 # Google Incremental Authorization Samples
-Three samples ASP.NET Core 2.1 web apps to demonstrate incremental authorization. Google
+These sample ASP.NET Core 2.1 web apps demonstrate incremental authorization to Google services. Google
 [recommends](https://developers.google.com/identity/sign-in/web/incremental-auth) requesting scopes
 only as needed, especially if the consent screen with all scopes is overwhelming. This is often the
 case with educational apps which require consent from students.
