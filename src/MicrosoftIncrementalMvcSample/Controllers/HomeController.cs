@@ -81,6 +81,15 @@ namespace MicrosoftIncrementalMvcSample.Controllers
         /// </summary>
         public async Task<IActionResult> ListCourses(CancellationToken cancellationToken)
         {
+            // If they haven't signed in yet, do that first
+            if (!User.Identity.IsAuthenticated)
+            {
+                return new ChallengeResult(new AuthenticationProperties
+                {
+                    RedirectUri = Url.Action("ListCourses")
+                });
+            }
+
             // Simplify the incremental auth experience by providing a login_hint. The user will
             // not be asked to select their account if they have already signed in.
             var loginHint = GetUserEmail();
@@ -92,7 +101,11 @@ namespace MicrosoftIncrementalMvcSample.Controllers
             {
                 return new ChallengeResult("ClassList", new AuthenticationProperties()
                 {
-                    Parameters = { new KeyValuePair<string, object>("login_hint", loginHint )},
+                    Parameters =
+                    {
+                        new KeyValuePair<string, object>("login_hint", loginHint ),
+                        new KeyValuePair<string, object>("include_granted_scopes", true)
+                    },
                     RedirectUri = Url.Action("ListCourses")
                 });
             }

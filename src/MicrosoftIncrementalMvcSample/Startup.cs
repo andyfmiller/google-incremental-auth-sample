@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,8 +56,6 @@ namespace MicrosoftIncrementalMvcSample
                     options.AccessType = "offline";
                     options.SaveTokens = true;
                     options.Scope.Clear();
-                    options.Scope.Add("email");
-                    options.Scope.Add("profile");
                     options.Scope.Add("https://www.googleapis.com/auth/classroom.courses.readonly");
                 });
         }
