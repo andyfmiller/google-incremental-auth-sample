@@ -40,9 +40,10 @@ namespace MicrosoftIncrementalMvcSample
                     options.Events.OnRemoteFailure = context =>
                     {
                         // OAuthHandler will give every IAuthenticationRequestHandler a chance to
-                        // handle the /signin-google callback (with the authorization code). This
+                        // handle the /signin-google callback (with the authorization code). When
+                        // the request originates from the "ClassList" AuthenticationScheme, this
                         // handler, with AuthenticationScheme=GoogleDefaults.AuthenticationScheme,
-                        // will not be able to read the state value in the request, and will fail.
+                        // will not be able to read the state value in the callback, and will fail.
                         // When that happens, tell OAuthHandler to skip this handler and try the
                         // next.
                         context.SkipHandler();
