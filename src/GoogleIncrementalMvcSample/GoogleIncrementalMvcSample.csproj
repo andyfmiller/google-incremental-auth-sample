@@ -7,12 +7,12 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Apis.Classroom.v1" Version="1.34.0.1236" />
-    <PackageReference Include="Microsoft.AspNetCore.All"/>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Google.Apis.Auth.AspNetCore\Google.Apis.Auth.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\google-api-dotnet-client\Src\Support\Google.Apis.Auth.AspNetCore\Google.Apis.Auth.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>

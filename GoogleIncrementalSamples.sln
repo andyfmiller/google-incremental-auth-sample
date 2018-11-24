@@ -12,9 +12,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrosoftIncrementalMvcSamp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoogleIncrementalMvcSample", "src\GoogleIncrementalMvcSample\GoogleIncrementalMvcSample.csproj", "{7AD98027-F9BE-4DF1-9429-53BC920DF858}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Apis.Auth.AspNetCore", "src\Google.Apis.Auth.AspNetCore\Google.Apis.Auth.AspNetCore.csproj", "{581F4751-06AB-4CCD-A470-2221AC8B2B93}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenIdConnectIncrementalMvcSample", "src\OpenIdConnectIncrementalMvcSample\OpenIdConnectIncrementalMvcSample.csproj", "{6CA1A4F6-802B-4F00-91D8-49088B3FA7FD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Apis.Auth.AspNetCore", "..\google-api-dotnet-client\Src\Support\Google.Apis.Auth.AspNetCore\Google.Apis.Auth.AspNetCore.csproj", "{DB753462-EBE5-4ED3-BFA3-E7403F8063F5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Apis.Auth", "..\google-api-dotnet-client\Src\Support\Google.Apis.Auth\Google.Apis.Auth.csproj", "{48D0A675-3F9C-476A-8E3A-97DCE602C37E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Apis.Core", "..\google-api-dotnet-client\Src\Support\Google.Apis.Core\Google.Apis.Core.csproj", "{074BA54A-A210-4C28-A369-44187C25EBBD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Apis", "..\google-api-dotnet-client\Src\Support\Google.Apis\Google.Apis.csproj", "{5504278A-2C11-4D09-B997-6B5F9F9022AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,14 +36,26 @@ Global
 		{7AD98027-F9BE-4DF1-9429-53BC920DF858}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AD98027-F9BE-4DF1-9429-53BC920DF858}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AD98027-F9BE-4DF1-9429-53BC920DF858}.Release|Any CPU.Build.0 = Release|Any CPU
-		{581F4751-06AB-4CCD-A470-2221AC8B2B93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{581F4751-06AB-4CCD-A470-2221AC8B2B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{581F4751-06AB-4CCD-A470-2221AC8B2B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{581F4751-06AB-4CCD-A470-2221AC8B2B93}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6CA1A4F6-802B-4F00-91D8-49088B3FA7FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6CA1A4F6-802B-4F00-91D8-49088B3FA7FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CA1A4F6-802B-4F00-91D8-49088B3FA7FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CA1A4F6-802B-4F00-91D8-49088B3FA7FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB753462-EBE5-4ED3-BFA3-E7403F8063F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB753462-EBE5-4ED3-BFA3-E7403F8063F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB753462-EBE5-4ED3-BFA3-E7403F8063F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB753462-EBE5-4ED3-BFA3-E7403F8063F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48D0A675-3F9C-476A-8E3A-97DCE602C37E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48D0A675-3F9C-476A-8E3A-97DCE602C37E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48D0A675-3F9C-476A-8E3A-97DCE602C37E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48D0A675-3F9C-476A-8E3A-97DCE602C37E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{074BA54A-A210-4C28-A369-44187C25EBBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{074BA54A-A210-4C28-A369-44187C25EBBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{074BA54A-A210-4C28-A369-44187C25EBBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{074BA54A-A210-4C28-A369-44187C25EBBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5504278A-2C11-4D09-B997-6B5F9F9022AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5504278A-2C11-4D09-B997-6B5F9F9022AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5504278A-2C11-4D09-B997-6B5F9F9022AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5504278A-2C11-4D09-B997-6B5F9F9022AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

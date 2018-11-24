@@ -1,4 +1,4 @@
-﻿@model GoogleIncrementalMvcSample.Models.CoursesModel
+﻿@model GoogleIncrementalMvcSample.Models.IndexModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -15,41 +15,56 @@
     </thead>
     <tbody>
         <tr>
-            @if (!string.IsNullOrEmpty(ViewData["PersonName"]?.ToString()))
+            @if (User.Identity.IsAuthenticated)
             {
                 <td>
-                    <a href='@Url.Action("SignOut")'>Sign out of this site</a>
+                    <a href='@Url.Action("SignOut")'>Sign Out</a>
                 </td>
                 <td>
-                    <span>Signed in as @ViewData["PersonName"] (@ViewData["PersonEmail"])</span>
+                    <span>Signed in as @Model.UserName (@Model.UserEmail)</span>
                 </td>
             }
             else
             {
                 <td>
-                    <a href='@Url.Action("SignIn")'>Get user's name and email address</a>
+                    <a href='@Url.Action("SignIn")'>Sign In</a>
                 </td>
                 <td>
                     <span>Signed out</span>
                 </td>
             }
         </tr>
+    <tr>
+        <td>
+            <a href='@Url.Action("ListCourses")'>Get a list of Google Classroom classes</a>
+        </td>
+        <td>
+            @if (Model.Courses != null)
+            {
+                <p>@Model.UserName's classes</p>
+                <ol>
+                    @foreach (var course in Model.Courses)
+                    {
+                        <li>@course.CourseName</li>
+                    }
+                </ol>
+            }
+        </td>
+    </tr>
+    @if (Model.Scopes != null)
+    {
         <tr>
+            <td></td>
             <td>
-                <a href='@Url.Action("ListCourses")'>Get a list of Google Classroom classes</a>
-            </td>
-            <td>
-                @if (Model?.Courses != null)
-                {
-                    <p>@ViewData["PersonName"]'s classes:</p>
-                    <ol>
-                        @foreach (var course in Model.Courses)
-                        {
-                            <li>@course.CourseName</li>
-                        }
-                    </ol>
-                }
+                <p>Scopes</p>
+                <ul>
+                    @foreach (var scope in Model.Scopes)
+                    {
+                        <li>@scope</li>
+                    }
+                </ul>
             </td>
         </tr>
+    }
     </tbody>
 </table>

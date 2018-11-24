@@ -2,47 +2,37 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Google.Apis.Auth;
-using Google.Apis.Auth.OAuth2.AspNetCore.Mvc;
+using Google.Apis.Auth.AspNetCore;
 using Google.Apis.Classroom.v1;
 using Google.Apis.Classroom.v1.Data;
 using Google.Apis.Services;
 using GoogleIncrementalMvcSample.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 
 namespace GoogleIncrementalMvcSample.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IConfiguration _configuration;
+        private readonly IGoogleAuthProvider _auth;
 
-        public HomeController(IConfiguration configuration)
+        public HomeController(IGoogleAuthProvider auth)
         {
-            _configuration = configuration;
-        }
-
-        private string ClientId
-        {
-            get { return _configuration["Authentication:Google:ClientId"]; }
-        }
-
-        private string ClientSecret
-        {
-            get { return _configuration["Authentication:Google:ClientSecret"]; }
+            _auth = auth;
         }
 
         /// <summary>
         /// Display the home page.
         /// </summary>
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        public async Task<IActionResult> Index()
         {
-            await LoadUserInfo(cancellationToken);
+            var model = await LoadUserInfoAsync();
 
-            return View();
+            return View(model);
         }
 
         /// <summary>
@@ -56,41 +46,18 @@ namespace GoogleIncrementalMvcSample.Controllers
         /// <summary>
         /// User Sign In action.
         /// </summary>
-        public async Task<IActionResult> SignIn(CancellationToken cancellationToken)
+        [Authorize]
+        public IActionResult SignIn()
         {
-            var appFlow = new SignInAppFlowMetadata(ClientId, ClientSecret);
-
-            // Ask the user to sign in. Scopes requested: email and profile.
-            var result =
-                await new AuthorizationCodeMvcApp(this, appFlow)
-                    .AuthorizeAsync(cancellationToken)
-                    .ConfigureAwait(false);
-
-            if (result.Credential == null)
-            {
-                return Redirect(result.RedirectUri);
-            }
-
-
-            // Store the scopes in the token
-            await AddScopesToTokenAsync(appFlow, cancellationToken).ConfigureAwait(false);
-
             return RedirectToAction("Index");
         }
 
         /// <summary>
         /// User Sign Out action.
         /// </summary>
-        public async Task<IActionResult> SignOut(CancellationToken cancellationToken)
+        public async Task<IActionResult> SignOut()
         {
-            var appFlow = new SignInAppFlowMetadata(ClientId, ClientSecret);
-            var userId = appFlow.GetUserId(this);
-            var token = await appFlow.Flow.LoadTokenAsync(userId, cancellationToken);
-            if (token != null && !string.IsNullOrEmpty(token.AccessToken))
-            {
-                await appFlow.Flow.RevokeTokenAsync(userId, token.AccessToken, cancellationToken).ConfigureAwait(false);
-                TempData.Remove("user");
-            }
+            await HttpContext.SignOutAsync();
 
             return RedirectToAction("Index");
         }
@@ -99,51 +66,18 @@ namespace GoogleIncrementalMvcSample.Controllers
         /// Display the list of the the user's Google Classroom classes. Scopes
         /// requested: email, profile, and ClassroomService.Scope.ClassroomCoursesReadonly.
         /// </summary>
-        public async Task<IActionResult> ListCourses(CancellationToken cancellationToken)
+        [GoogleScopedAuthorize("https://www.googleapis.com/auth/classroom.courses.readonly")]
+        public async Task<IActionResult> ListCourses()
         {
-            // Simplify the incremental auth experience by providing a login_hint. The user will
-            // not be asked to select their account if they have already signed in.
-            var loginHint = await GetUserEmail(cancellationToken).ConfigureAwait(false);
-            var appFlow = new ClassListAppFlowMetadata(ClientId, ClientSecret, loginHint);
-            var userId = appFlow.GetUserId(this);
-            var token = await appFlow.Flow.LoadTokenAsync(userId, cancellationToken).ConfigureAwait(false);
+            var cred = await _auth.GetCredentialAsync();
 
-            // If the current token does not include all the required scopes,
-            // expire the token to force a new authorization code. If the scopes
-            // are null, then this is a fresh token, and we don't need a new one.
-            if (token != null && !token.IsExpired(appFlow.Flow.Clock) && !string.IsNullOrWhiteSpace(token.Scope))
-            {
-                var tokenScopes = token.Scope.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                if (!appFlow.Scopes.All(s => tokenScopes.Contains(s)))
-                {
-                    token.RefreshToken = null;
-                    token.ExpiresInSeconds = 0;
-                    await appFlow.Flow.DataStore.StoreAsync(userId, token);
-                }
-            }
-
-            var result = await new AuthorizationCodeMvcApp(this, appFlow)
-                .AuthorizeAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            if (result.Credential == null)
-            {
-                return Redirect(result.RedirectUri);
-            }
-
-            // Store the scopes in the token
-            await AddScopesToTokenAsync(appFlow, cancellationToken).ConfigureAwait(false);
-
-            // Load the new user information
-            await LoadUserInfo(cancellationToken).ConfigureAwait(false);
-
-            var model = new CoursesModel();
+            var model = await LoadUserInfoAsync();
 
             try
             {
                 using (var classroomService = new ClassroomService(new BaseClientService.Initializer
                 {
-                    HttpClientInitializer = result.Credential,
+                    HttpClientInitializer = cred,
                     ApplicationName = "gc2lti"
                 }))
                 {
@@ -163,7 +97,7 @@ namespace GoogleIncrementalMvcSample.Controllers
                         }
 
                         coursesResponse =
-                            await coursesRequest.ExecuteAsync(cancellationToken).ConfigureAwait(false);
+                            await coursesRequest.ExecuteAsync();
                         if (coursesResponse.Courses != null)
                         {
                             foreach (var course in coursesResponse.Courses)
@@ -186,62 +120,19 @@ namespace GoogleIncrementalMvcSample.Controllers
             }
         }
 
-        /// <summary>
-        /// Get the user's email from the current token
-        /// </summary>
-        private async Task<string> GetUserEmail(CancellationToken cancellationToken)
+        private async Task<IndexModel> LoadUserInfoAsync()
         {
-            try
+            var model = new IndexModel();
+
+            if (User.Identity.IsAuthenticated)
             {
-                var appFlow = new SignInAppFlowMetadata(ClientId, ClientSecret);
-                var userId = appFlow.GetUserId(this);
-                var token = await appFlow.Flow.LoadTokenAsync(userId, cancellationToken).ConfigureAwait(false);
-                if (token != null && !token.IsExpired(appFlow.Flow.Clock) && !string.IsNullOrEmpty(token.IdToken))
-                {
-                    var payload = await GoogleJsonWebSignature.ValidateAsync(token.IdToken).ConfigureAwait(false);
-                    return payload.Email;
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
+                model.UserEmail = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+                model.UserName = User.Claims.SingleOrDefault(c => c.Type == "name")?.Value;
+
+                model.Scopes = await _auth.GetCurrentScopesAsync();
             }
 
-            return null;
-        }
-
-        /// <summary>
-        /// If the user is signed in, load ViewData with some information to display.
-        /// </summary>
-        private async Task LoadUserInfo(CancellationToken cancellationToken)
-        {
-            try
-            {
-                var appFlow = new SignInAppFlowMetadata(ClientId, ClientSecret);
-                var userId = appFlow.GetUserId(this);
-                var token = await appFlow.Flow.LoadTokenAsync(userId, cancellationToken).ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(token?.IdToken))
-                {
-                    var payload = await GoogleJsonWebSignature.ValidateAsync(token.IdToken).ConfigureAwait(false);
-                    ViewData["PersonName"] = payload.Name;
-                    ViewData["PersonEmail"] = payload.Email;
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-
-        /// <summary>
-        /// Store the FlowMetadata scopes requested in the user's token.
-        /// </summary>
-        private async Task AddScopesToTokenAsync(IAppFlowScopes appFlow, CancellationToken cancellationToken)
-        {
-            var userId = appFlow.GetUserId(this);
-            var token = await appFlow.Flow.LoadTokenAsync(userId, cancellationToken).ConfigureAwait(false);
-            token.Scope = string.Join(" ", appFlow.Scopes);
-            await appFlow.Flow.DataStore.StoreAsync(userId, token).ConfigureAwait(false);
+            return model;
         }
     }
 }
