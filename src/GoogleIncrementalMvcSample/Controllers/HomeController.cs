@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Google.Apis.Auth.AspNetCore;
+using Google.Apis.Auth.AspNetCore3;
 using Google.Apis.Classroom.v1;
 using Google.Apis.Classroom.v1.Data;
 using Google.Apis.Services;
@@ -18,35 +18,34 @@ namespace GoogleIncrementalMvcSample.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IGoogleAuthProvider _auth;
 
-        public HomeController(IGoogleAuthProvider auth)
+        public HomeController()
         {
-            _auth = auth;
         }
 
         /// <summary>
         /// Display the home page.
         /// </summary>
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromServices] IGoogleAuthProvider _auth)
         {
-            var model = await LoadUserInfoAsync();
+            var model = await LoadUserInfoAsync(_auth);
 
             return View(model);
         }
 
-        /// <summary>
-        /// Display an error page.
-        /// </summary>
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
-        }
+    /// <summary>
+    /// Display an error page.
+    /// </summary>
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+      return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
 
-        /// <summary>
-        /// User Sign In action.
-        /// </summary>
-        [Authorize]
+    /// <summary>
+    /// User Sign In action.
+    /// </summary>
+    [Authorize]
         public IActionResult SignIn()
         {
             return RedirectToAction("Index");
@@ -62,16 +61,19 @@ namespace GoogleIncrementalMvcSample.Controllers
             return RedirectToAction("Index");
         }
 
-        /// <summary>
-        /// Display the list of the the user's Google Classroom classes. Scopes
-        /// requested: email, profile, and ClassroomService.Scope.ClassroomCoursesReadonly.
-        /// </summary>
-        [GoogleScopedAuthorize("https://www.googleapis.com/auth/classroom.courses.readonly")]
-        public async Task<IActionResult> ListCourses()
+    /// <summary>
+    /// Display the list of the the user's Google Classroom classes. Scopes
+    /// requested: email, profile, and ClassroomService.Scope.ClassroomCoursesReadonly.
+    /// </summary>
+    //[GoogleScopedAuthorize("https://www.googleapis.com/auth/classroom.courses.readonly")]
+
+    [Authorize]
+
+    public async Task<IActionResult> ListCourses([FromServices] IGoogleAuthProvider _auth)
         {
             var cred = await _auth.GetCredentialAsync();
 
-            var model = await LoadUserInfoAsync();
+            var model = await LoadUserInfoAsync(_auth);
 
             try
             {
@@ -120,7 +122,7 @@ namespace GoogleIncrementalMvcSample.Controllers
             }
         }
 
-        private async Task<IndexModel> LoadUserInfoAsync()
+        private async Task<IndexModel> LoadUserInfoAsync(IGoogleAuthProvider auth)
         {
             var model = new IndexModel();
 
@@ -129,7 +131,7 @@ namespace GoogleIncrementalMvcSample.Controllers
                 model.UserEmail = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
                 model.UserName = User.Claims.SingleOrDefault(c => c.Type == "name")?.Value;
 
-                model.Scopes = await _auth.GetCurrentScopesAsync();
+                model.Scopes = await auth.GetCurrentScopesAsync();
             }
 
             return model;
